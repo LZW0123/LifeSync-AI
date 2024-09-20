@@ -15,7 +15,7 @@ def iterator(prompt, ai_version):
             )
             #openai.api_key = AI_API_KEY
             #openai.base_url="https://api.chatanywhere.tech/v1"
-            response = client.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model=ai_version,
                 messages=[
                     {"role": "system", "content": system_content},
