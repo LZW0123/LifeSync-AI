@@ -10,6 +10,7 @@ def iterator(prompt, ai_version):
         
         if "gpt" in ai_version.lower():
             openai.api_key = AI_API_KEY
+            openai.base_url="https://api.chatanywhere.tech/v1"
             response = openai.ChatCompletion.create(
                 model=ai_version,
                 messages=[
