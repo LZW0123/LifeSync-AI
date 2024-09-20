@@ -24,7 +24,7 @@ def iterator(prompt, ai_version):
                 temperature=0.3
             )
             # 直接返回生成的内容部分
-            return response['choices'][0]['message']['content'].strip()
+            return response.choices[0].message.content.strip()
         
         elif "glm" in ai_version.lower():
             client = ZhipuAI(AI_API_KEY)
