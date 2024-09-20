@@ -3,7 +3,7 @@ from zhipuai import ZhipuAI  # Import ZhipuAI for GLM models
 from config import AI_API_KEY
 from src.ai_operations.ai_iterator import iterator
 import re
-
+from openai import OpenAI
 def email_advice_with_ai(data, ai_version, present_location, user_career, local_time, schedule_prompt=""):
     print("\nGenerating advice with gpt...")
     try:
@@ -72,9 +72,13 @@ def email_advice_with_ai(data, ai_version, present_location, user_career, local_
         system_content = f"GPT应当表现出作为私人秘书的能力，向我（雇主）总结当天的安排，提醒明天的安排，提醒我根据天气情况和任务日程情况做相应的准备。请在汇报时体现出秘书的专业性和对我的关心，使用中文。请用HTML格式（不要CSS），只要body部分，包括一个h2主标题和其余内容。不要任何寒暄，不要任何称呼，不要任何问候语或开场白。"
         print(system_content+"\n"+prompt)
         if "gpt" in ai_version.lower():
-            openai.api_key = AI_API_KEY
-            openai.base_url="https://api.chatanywhere.tech/v1"
-            response = openai.ChatCompletion.create(
+            #openai.api_key = AI_API_KEY
+            #openai.base_url="https://api.chatanywhere.tech/v1"
+            client=OpenAI(
+                api_key = AI_API_KEY,
+                base_url="https://api.chatanywhere.tech/v1"
+            )
+            response = client.ChatCompletion.create(
                 model=ai_version,
                 messages=[
                     {"role": "system", "content": system_content},
