@@ -32,7 +32,7 @@ for user_id in user_data:
     events = fetch_event_from_notion(custom_date, user_notion_token, user_event_database_id,time_zone_offset)
 
     forecast_data = get_weather_forecast(present_location, time_zone_offset)
-
+    print(forecast_data)
     data = {
         "weather": forecast_data['tomorrow'],
         # tasks
