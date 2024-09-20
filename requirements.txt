@@ -1,5 +1,5 @@
 notion-client
-openai==0.28
+openai
 python-dotenv
 requests
 pytz
