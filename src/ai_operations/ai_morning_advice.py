@@ -76,7 +76,7 @@ def email_advice_with_ai(data, ai_version, present_location, user_career, local_
                 api_key = AI_API_KEY,
                 base_url="https://api.chatanywhere.tech/v1"
             )
-            response = openai.chat.completions.create(
+            response = client.chat.completions.create(
                 model=ai_version,
                 messages=[
                     {"role": "system", "content": system_content},
