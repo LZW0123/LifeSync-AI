@@ -1,7 +1,7 @@
 import openai  # 用于GPT模型
 from zhipuai import ZhipuAI  # 导入ZhipuAI以使用GLM模型
 from config import AI_API_KEY  # 导入API密钥
-
+from openai import OpenAI
 def iterator(prompt, ai_version):
     print("\nGenerating Iterative Information...")
     try:
@@ -9,9 +9,13 @@ def iterator(prompt, ai_version):
         system_content = f"你应当尽可能完成用户的指令。你的回答应该越多越好，越详细越好。针对每一个事件给出尽可能多的信息和理由。"
         
         if "gpt" in ai_version.lower():
-            openai.api_key = AI_API_KEY
-            openai.base_url="https://api.chatanywhere.tech/v1"
-            response = openai.ChatCompletion.create(
+            client=OpenAI(
+                api_key = AI_API_KEY,
+                base_url="https://api.chatanywhere.tech/v1"
+            )
+            #openai.api_key = AI_API_KEY
+            #openai.base_url="https://api.chatanywhere.tech/v1"
+            response = client.ChatCompletion.create(
                 model=ai_version,
                 messages=[
                     {"role": "system", "content": system_content},
