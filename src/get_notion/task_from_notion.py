@@ -80,32 +80,43 @@ def fetch_tasks_from_notion(custom_date, USER_NOTION_TOKEN, USER_DATABASE_ID):
                 elif start_datetime and today < start_datetime.date() <= future_date:
                     tasks["future"].append(task)
 
-        # 查询已完成任务
+
         completed_results = notion.databases.query(
             database_id=USER_DATABASE_ID,
             filter={
                 "and": [
+                    # 筛选已完成的任务
                     {"property": "Complete", "checkbox": {"equals": True}},
-                    {"property": "Date", "date": {"equals": today.strftime('%Y-%m-%d')}}
+                    # 确保任务有结束时间，并且结束时间是今天
                 ]
             }
         )
-
-        # 处理已完成任务
         for row in completed_results["results"]:
-            task = {
-                'Name': ''.join([part['text']['content'] for part in row['properties']['Name']['title']]) if
-                row['properties']['Name']['title'] else 'NA',
-                'Description': ''.join(
-                    [part['text']['content'] for part in row['properties']['Description']['rich_text']]) if
-                row['properties']['Description']['rich_text'] else 'NA',
-                'Progress': ''.join([part['text']['content'] for part in row['properties']['Progress']['rich_text']]) if
-                row['properties']['Progress']['rich_text'] else 'NA',
-                'Urgency Level': row['properties']['紧急程度']['select']['name'] if '紧急程度' in row['properties'] and
-                                                                                    row['properties']['紧急程度'][
-                                                                                        'select'] else 'NA'
-            }
-            tasks["completed_today"].append(task)
+            if 'date' in row['properties']['Date'] and row['properties']['Date']['date']:
+                date_info = row['properties']['Date']['date']
+            end_datetime = datetime.fromisoformat(date_info['end']) if 'end' in date_info and date_info[
+                'end'] else None
+            start_datetime = datetime.fromisoformat(date_info['start']) if 'start' in date_info and date_info[
+                'start'] else None
+
+            end_time_str = end_datetime.strftime('%Y-%m-%d %H:%M') if end_datetime else None
+            start_time_str = start_datetime.strftime('%Y-%m-%d %H:%M') if start_datetime else None
+            if end_datetime and end_datetime.date() == today:
+                task = {
+                    'Name': ''.join([part['text']['content'] for part in row['properties']['Name']['title']]) if
+                    row['properties']['Name']['title'] else 'NA',
+                    'Description': ''.join(
+                        [part['text']['content'] for part in row['properties']['Description']['rich_text']]) if
+                    row['properties']['Description']['rich_text'] else 'NA',
+                    'Progress': ''.join([part['text']['content'] for part in row['properties']['Progress']['rich_text']]) if
+                    row['properties']['Progress']['rich_text'] else 'NA',
+                    'Urgency Level': row['properties']['紧急程度']['select']['name'] if '紧急程度' in row['properties'] and
+                                                                                        row['properties']['紧急程度'][
+                                                                                            'select'] else 'NA',
+                    'Start Time': start_time_str if start_time_str else 'N/A',
+                    'End Time': end_time_str if end_time_str else 'N/A'
+                }
+                tasks["completed_today"].append(task)
 
         # 如果某一类任务为空，添加提示信息
         if not tasks["today_due"]:
@@ -118,6 +129,7 @@ def fetch_tasks_from_notion(custom_date, USER_NOTION_TOKEN, USER_DATABASE_ID):
             tasks["completed_today"].append({'Message': 'No tasks completed today.'})
 
         print(tasks)
+    
         print("Fetching success.")
 
         return tasks
