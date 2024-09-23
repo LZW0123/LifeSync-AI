@@ -37,22 +37,27 @@ def fetch_tasks_from_notion(custom_date, USER_NOTION_TOKEN, USER_DATABASE_ID):
                 start_time_str = start_datetime.strftime('%Y-%m-%d %H:%M') if start_datetime else None
 
                 # 获取紧急程度
-                urgency_level = row['properties']['紧急程度']['select']['name'] if '紧急程度' in row['properties'] and row['properties']['紧急程度']['select'] else 'NA'
-
+                urgency_level = row['properties']['紧急程度']['select']['name'] if '紧急程度' in row['properties'] and row['properties']['紧急程度']['select'] else 'NA'\
                 # 提取并清理Description富文本内容
                 description = ''
+                progress = ''
                 if 'rich_text' in row['properties']['Description'] and row['properties']['Description']['rich_text']:
                     description = ''.join([part['text']['content'] for part in row['properties']['Description']['rich_text']])
                     # 清理特殊字符
                     description = description.replace('\n', ' ').replace('\xa0', ' ').strip()
-
+                if 'rich_text' in row['properties']['Progress'] and row['properties']['Progress']['rich_text']:
+                    progress = ''.join([part['text']['content'] for part in row['properties']['Progress']['rich_text']])
+                    # 清理特殊字符
+                    progress = progress.replace('\n', ' ').replace('\xa0', ' ').strip()
                 task = {
                     'Name': ''.join([part['text']['content'] for part in row['properties']['Name']['title']]) if row['properties']['Name']['title'] else 'NA',
                     'Description': description if description else 'NA',
+                    'Progress': progress if progress else 'NA',
                     'Urgency Level': urgency_level,
                     'Start Time': start_time_str if start_time_str else 'N/A',
                     'End Time': end_time_str if end_time_str else 'N/A'
                 }
+
 
                 # 分类任务
                 if end_datetime and end_datetime.date() < today:
