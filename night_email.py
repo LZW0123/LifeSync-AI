@@ -38,6 +38,7 @@ for user_id in user_data:
         # tasks
         "today_tasks": tasks["today_due"],
         "in_progress_tasks":tasks["in_progress"],
+        "completed_today_tasks": tasks["completed_today"],
         "future_tasks": tasks["future"],
         # events
         "in_progress_events":events["in_progress"],
