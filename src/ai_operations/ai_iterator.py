@@ -11,7 +11,7 @@ def iterator(prompt, ai_version):
         if "gpt" in ai_version.lower():
             client=OpenAI(
                 api_key = AI_API_KEY,
-                base_url="https://api.chatanywhere.tech/v1"
+                base_url="https://api.chatanywhere.org/v1"
             )
             #openai.api_key = AI_API_KEY
             #openai.base_url="https://api.chatanywhere.tech/v1"
