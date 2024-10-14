@@ -84,7 +84,7 @@ def email_advice_with_ai(data, ai_version, present_location, user_career, local_
         if "gpt" in ai_version.lower():
             client = OpenAI(
                 api_key=AI_API_KEY,
-                base_url="https://api.chatanywhere.tech/v1"
+                base_url="https://api.chatanywhere.org/v1"
             )
             response = client.chat.completions.create(
                 model=ai_version,
